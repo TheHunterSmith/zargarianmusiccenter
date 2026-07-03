@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory — Zargarian Music Center</title>
+<meta name="description" content="Browse current inventory at Zargarian Music Center in Glendale, CA — guitars, strings, percussion, and more. In-store pickup only.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .filter-bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;}
+  .filter-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.04em; text-transform:uppercase;
+    padding:8px 16px; border-radius:20px;
+    border:1px solid var(--line); background:transparent; color:var(--walnut);
+    cursor:pointer; transition:background .2s, color .2s;
+  }
+  .filter-btn:hover{background:var(--parchment-soft)}
+  .filter-btn.active{background:var(--brass); color:var(--walnut-deep); border-color:var(--brass);}
+  .item-card{display:flex; flex-direction:column;}
+  .item-card img, .item-card .photo-slot{
+    width:100%; aspect-ratio:3/4; object-fit:contain; border-radius:6px; margin-bottom:14px; background:var(--parchment-soft);
+  }
+  .item-card .price{font-family:'JetBrains Mono', monospace; color:var(--sunburst); font-size:1.05rem; margin-top:4px;}
+  .item-card .status{font-family:'JetBrains Mono', monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--brass); margin-top:6px;}
+  .item-card .hold-actions{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .item-card .hold-actions .btn{margin-top:0; padding:9px 14px; font-size:0.75rem;}
+  #inventory-empty{font-family:'JetBrains Mono', monospace; color:var(--walnut); opacity:0.7;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <a href="index.html" class="brand">Zargarian <span>Music Center</span></a>
+  <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+  <nav class="main">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="repairs.html">Repairs</a>
+    <a href="inventory.html" class="active">Inventory</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="hero" style="padding-bottom:56px;">
+  <div class="wrap">
+    <span class="eyebrow">In the shop right now</span>
+    <h1 style="font-size:clamp(2.2rem,6vw,3.4rem);">What's on<br>the <em>wall</em>.</h1>
+    <p class="lede">Everything here is in-store pickup only. Give us a call to hold something before you drive over.</p>
+  </div>
+</section>
+
+<div class="string-divider"><span class="peg"></span></div>
+
+<section class="wrap">
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-cat="All">All</button>
+  </div>
+  <div class="grid-3" id="inventory-grid"></div>
+  <p id="inventory-empty" style="display:none;">No items in this category right now — check back soon.</p>
+</section>
+
+<div class="pickup-note">Pickup in-store only — we do not offer shipping</div>
+
+<footer>
+  <div class="wrap">
+    <div class="col">
+      <h4>Zargarian Music Center</h4>
+      <p>1423½ W Kenneth Rd<br>Glendale, CA 91201</p>
+    </div>
+    <div class="col">
+      <h4>Contact</h4>
+      <a href="tel:8182430511">(818) 243-0511</a>
+      <a href="contact.html">Get directions</a>
+      <a href="https://www.facebook.com/zmcglendale/" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.yelp.com/biz/zargarian-music-center-glendale" target="_blank" rel="noopener">Yelp reviews</a>
+    </div>
+    <div class="col">
+      <h4>Hours</h4>
+      <p>Mon–Fri: 9:30 AM – 6:00 PM<br>Sat: 9:30 AM – 5:00 PM<br>Sun: Closed</p>
+    </div>
+  </div>
+  <div class="bottom">In-store pickup only — no shipping available</div>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+let allItems = [];
+let activeCat = "All";
+
+fetch('inventory.json')
+  .then(r => r.json())
+  .then(data => {
+    allItems = data;
+    buildFilters(data);
+    render();
+  })
+  .catch(() => {
+    document.getElementById('inventory-empty').style.display = 'block';
+    document.getElementById('inventory-empty').textContent = "Inventory is loading soon — check back shortly.";
+  });
+
+function buildFilters(items){
+  const cats = ["All", ...new Set(items.map(i => i.category))];
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = cats.map(c =>
+    `<button class="filter-btn${c==='All'?' active':''}" data-cat="${c}">${c}</button>`
+  ).join('');
+  bar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+}
+
+function render(){
+  const grid = document.getElementById('inventory-grid');
+  const empty = document.getElementById('inventory-empty');
+  const items = activeCat === "All" ? allItems : allItems.filter(i => i.category === activeCat);
+  if(items.length === 0){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    empty.textContent = "No items in this category right now — check back soon.";
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = items.map(i => {
+    const subject = encodeURIComponent(`Hold request: ${i.name}`);
+    const body = encodeURIComponent(`Hi, I'd like to hold this item.\n\nItem: ${i.name} (${i.price})\n\nName:\nPhone:\n`);
+    return `
+    <div class="card item-card">
+      <img src="${i.image}" alt="${i.name}" onerror="this.outerHTML='<div class=&quot;photo-slot&quot;>Photo coming soon</div>'">
+      <h3>${i.name}</h3>
+      <p style="margin:0;">${i.desc || ''}</p>
+      <span class="price">${i.price}</span>
+      <span class="status">${i.status}</span>
+      <div class="hold-actions">
+        <a href="tel:8182430511" class="btn ghost">Call to hold</a>
+        <a href="mailto:zmcglendale@gmail.com?subject=${subject}&body=${body}" class="btn ghost">Email to hold</a>
+      </div>
+      <p style="font-size:0.72rem; opacity:0.6; margin-top:6px;">Email not opening? zmcglendale@gmail.com</p>
+    </div>
+  `;
+  }).join('');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Was Your Visit — Zargarian Music Center</title>
+<meta name="description" content="Tell us how your visit to Zargarian Music Center went.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .gate-wrap{
+    position:relative;
+    padding-top:24px;
+  }
+  .gate-btn{
+    display:flex; align-items:center; gap:18px;
+    width:100%; text-align:left;
+    background:#fff8ea; border:1px solid var(--line); border-radius:10px;
+    padding:26px 26px; margin-bottom:18px; cursor:pointer;
+    font-family:'Fraunces', serif; font-size:1.2rem; color:var(--walnut-deep);
+    transition:background .2s, transform .2s, border-color .2s, box-shadow .2s;
+    box-shadow:0 1px 2px rgba(43,29,20,0.04);
+  }
+  .gate-btn .icon{
+    flex-shrink:0;
+    width:44px; height:44px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem;
+  }
+  .gate-btn.positive .icon{ background:rgba(140,58,43,0.1); color:var(--sunburst); }
+  .gate-btn.negative .icon{ background:rgba(43,29,20,0.06); color:var(--walnut); }
+  .gate-btn.positive{
+    border-color:var(--brass);
+    background:linear-gradient(135deg, #fff8ea, #fbf0d4);
+  }
+  .gate-btn.positive:hover{
+    background:linear-gradient(135deg, #fbf0d4, #f5e4bd);
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(184,134,59,0.25);
+    border-color:var(--brass-bright);
+  }
+  .gate-btn.negative:hover{
+    background:var(--parchment-soft);
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(43,29,20,0.08);
+  }
+  .gate-btn .txt small{
+    display:block; font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem; letter-spacing:0.03em; text-transform:none;
+    color:var(--walnut); opacity:0.6; margin-top:4px; font-style:normal;
+  }
+  #panel-positive, #panel-negative{ display:none; }
+  #panel-positive.show, #panel-negative.show{ display:block; }
+  #panel-gate.hide{ display:none; }
+  .result-card{
+    background:#fff8ea; border:1px solid var(--line); border-radius:10px;
+    padding:32px 28px; text-align:center;
+  }
+  .result-card .big-emoji{ font-size:2.4rem; margin-bottom:6px; }
+  .back-link{
+    display:inline-block; margin-top:22px; font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.03em; text-transform:uppercase;
+    color:var(--sunburst); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <a href="index.html" class="brand">Zargarian <span>Music Center</span></a>
+  <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+  <nav class="main">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="repairs.html">Repairs</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="hero" style="padding-bottom:56px; text-align:center;">
+  <div class="wrap">
+    <span class="eyebrow">Thanks for stopping by</span>
+    <h1 style="font-size:clamp(2.2rem,6vw,3.4rem);">How was your<br>visit <em>today</em>?</h1>
+    <p class="lede" style="margin-left:auto; margin-right:auto;">Thirty seconds of your time helps a neighborhood shop a lot more than you'd think.</p>
+  </div>
+</section>
+
+<div class="string-divider"><span class="peg"></span></div>
+
+<section class="wrap" style="max-width:560px; padding-bottom:96px;">
+
+  <div id="panel-gate" class="panel gate-wrap">
+    <button class="gate-btn positive" onclick="showPanel('positive')">
+      <span class="icon">★</span>
+      <span class="txt">Great — I'd recommend the business<small>Takes about 30 seconds</small></span>
+    </button>
+    <button class="gate-btn negative" onclick="showPanel('negative')">
+      <span class="icon">✎</span>
+      <span class="txt">Not great — something we should know<small>Send us feedback directly</small></span>
+    </button>
+  </div>
+
+  <div id="panel-positive" class="panel">
+    <div class="result-card">
+      <h3 style="margin-bottom:10px;">That's great to hear.</h3>
+      <p style="margin-bottom:22px;">A quick Google review makes a real difference for a small business — it takes about 30 seconds and means a lot to us.</p>
+      <a href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" rel="noopener" class="btn" style="display:block; text-align:center;">Leave a Google review</a>
+      <p style="text-align:center; font-size:0.9rem; opacity:0.75; margin-top:18px;">You're also welcome to leave a review on <a href="https://www.yelp.com/writeareview/biz/zargarian-music-center-glendale" target="_blank" rel="noopener" style="text-decoration:underline;">Yelp</a>.</p>
+    </div>
+    <button class="back-link" onclick="showPanel('gate')">← Back</button>
+  </div>
+
+  <div id="panel-negative" class="panel">
+    <div class="result-card">
+      <h3 style="margin-bottom:10px;">Sorry to hear that.</h3>
+      <p style="margin-bottom:22px;">Tell us what happened directly and we'll make it right — this goes straight to the owner, not a public post.</p>
+      <a href="mailto:zmcglendale@gmail.com?subject=Store%20Feedback&body=Hi%2C%20I%20wanted%20to%20share%20some%20feedback%20about%20my%20recent%20visit%3A%0A%0A" class="btn ghost" style="display:block; text-align:center; margin-bottom:10px;">Email us directly</a>
+      <p style="text-align:center; font-size:0.85rem; opacity:0.7;">If that didn't open your mail app: zmcglendale@gmail.com</p>
+    </div>
+    <button class="back-link" onclick="showPanel('gate')">← Back</button>
+  </div>
+
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="col">
+      <h4>Zargarian Music Center</h4>
+      <p>1423½ W Kenneth Rd<br>Glendale, CA 91201</p>
+    </div>
+    <div class="col">
+      <h4>Contact</h4>
+      <a href="tel:8182430511">(818) 243-0511</a>
+      <a href="contact.html">Get directions</a>
+      <a href="https://www.facebook.com/zmcglendale/" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.yelp.com/biz/zargarian-music-center-glendale" target="_blank" rel="noopener">Yelp reviews</a>
+    </div>
+    <div class="col">
+      <h4>Hours</h4>
+      <p>Mon–Fri: 9:30 AM – 6:00 PM<br>Sat: 9:30 AM – 5:00 PM<br>Sun: Closed</p>
+    </div>
+  </div>
+  <div class="bottom">In-store pickup only — no shipping available</div>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+function showPanel(name){
+  document.getElementById('panel-gate').classList.remove('show');
+  document.getElementById('panel-positive').classList.remove('show');
+  document.getElementById('panel-negative').classList.remove('show');
+  if(name === 'gate'){
+    document.getElementById('panel-gate').style.display = 'block';
+  } else {
+    document.getElementById('panel-gate').style.display = 'none';
+    document.getElementById('panel-' + name).classList.add('show');
+  }
+}
+</script>
+</body>
+</html>
